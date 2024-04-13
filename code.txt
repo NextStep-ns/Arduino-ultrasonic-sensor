@@ -1,0 +1,87 @@
+// C++ code
+//
+int trigPin = 3;
+int echoPin = 2;
+int redPin = 11;
+int greenPin = 9;
+int bluePin = 10;
+int buzzerPin= 8;
+
+long read_echo;
+long cm;
+
+long readdistance(int triggerPin, int echoPin)
+{
+ pinMode(trigPin, OUTPUT);
+ digitalWrite(trigPin, LOW); 
+ delayMicroseconds(2);
+  
+ digitalWrite(trigPin, HIGH); 
+ delayMicroseconds(10);
+ digitalWrite(trigPin, LOW);
+  
+ pinMode(echoPin, INPUT); 
+ return pulseIn(echoPin, HIGH);
+}
+
+
+void setup()
+{
+  Serial.begin(9600);
+  
+  pinMode(redPin, OUTPUT);
+  pinMode(greenPin, OUTPUT);
+  pinMode(bluePin, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);
+  
+  digitalWrite(redPin, LOW);
+  digitalWrite(greenPin, LOW);
+  digitalWrite(bluePin, LOW);
+  digitalWrite(buzzerPin, LOW);
+  
+  delay(2000);
+}
+
+void loop()
+{
+  cm = 0.01723*readdistance(trigPin, echoPin);
+  Serial.print("Distance in cm");
+  Serial.println(cm);
+  
+  if (cm <= 15)
+  {
+    digitalWrite(greenPin, LOW);
+    digitalWrite(redPin, LOW);
+      digitalWrite(bluePin, HIGH);
+      digitalWrite(buzzerPin, HIGH);
+      delay(250);
+      digitalWrite(bluePin, LOW);
+      digitalWrite(buzzerPin, LOW);
+  }
+  
+  if (15 < cm && cm <= 150)
+  {
+    analogWrite(greenPin, 1.275*cm);
+    analogWrite(redPin, 190-1.275*cm);
+      analogWrite(bluePin, 0);
+      digitalWrite(buzzerPin, LOW);
+  }
+  
+  if (150 < cm && cm <= 300)
+  {
+      digitalWrite(greenPin, HIGH);
+      digitalWrite(redPin, LOW);
+      digitalWrite(bluePin, LOW);
+      digitalWrite(buzzerPin, LOW);
+  }
+  
+  if (cm > 300)
+  {
+    digitalWrite(greenPin, LOW);
+    digitalWrite(redPin, LOW);
+      digitalWrite(bluePin, LOW);
+      digitalWrite(buzzerPin, LOW);
+  }
+
+  delay(70);
+}
